@@ -614,9 +614,6 @@ FUNCTION {format.names} {                         % String Entry::format_names(S
   #0 'nameindex :=                                %   nameindex = 0;
   {nameindex namecount < nameindex #3 < and} {    %   while ((nameindex < namecount) && (nameindex < 3)) {
     nameindex #1 + 'nameindex :=                  %     nameindex = nameindex + 1;
-    nameindex #1 > {                              %     if (nameindex > 1) {
-      cap.comma *                                 %       result = result + cap_comma;
-    } 'skip$ if$                                  %     }
     namelist nameindex "{vv}" format.name$        %     String tmp = format_name(namelist, nameindex, "{vv}");
    'vonname :=                                    %     vonname = tmp;
     namelist nameindex "{jj}" format.name$        %     tmp = format_name(namelist, nameindex, "{jj}");
@@ -626,19 +623,26 @@ FUNCTION {format.names} {                         % String Entry::format_names(S
     "u" change.case$ 'firstname :=                %     firstname = change_case(tmp, "u");
     namelist nameindex "{ll}" format.name$        %     tmp = format_name(namelist, nameindex, "{ll}");
     "u" change.case$ 'lastname :=                 %     lastname = change_case(tmp, "u");
-    jrname empty$ not {                           %     if (! empty(jrname)) {
-      jrname * " " *                              %       result = result + jrname + " "
-    } 'skip$ if$                                  %     }
-    vonname empty$ not {                          %     if (! empty(vonname)) {
-      vonname * " " *                             %       result = result + vonname + " "
-    } 'skip$ if$                                  %     }
-    lastname empty$ not {                         %     if (! empty(lastname)) {
-      lastname * " " *                            %       result = result + lastname + " "
-    } 'skip$ if$                                  %     }
-    firstname empty$ not {                        %     if (! empty(firstname)) {
-      firstname * " " *                           %       result = result + firstname + " "
-    } 'skip$ if$                                  %     }
-    trim.end                                      %     result = trim_end(result);
+    lastname "OTHERS" = not {                     %     if (lastname != "OTHERS") {
+      nameindex #1 > {                            %       if (nameindex > 1) {
+        cap.comma *                               %         result = result + cap_comma;
+      } 'skip$ if$                                %       }
+      jrname empty$ not {                         %       if (! empty(jrname)) {
+        jrname * " " *                            %         result = result + jrname + " "
+      } 'skip$ if$                                %       }
+      vonname empty$ not {                        %       if (! empty(vonname)) {
+        vonname * " " *                           %         result = result + vonname + " "
+      } 'skip$ if$                                %       }
+      lastname empty$ not {                       %       if (! empty(lastname)) {
+          lastname * " " *                        %         result = result + lastname + " "
+      } 'skip$ if$                                %       }
+      firstname empty$ not {                      %       if (! empty(firstname)) {
+          firstname * " " *                       %         result = result + firstname + " "
+      } 'skip$ if$                                %       }
+      trim.end                                    %       result = trim_end(result);
+    } {                                           %     }else {
+      cap.et.al *                                 %       result = result + cap_et_al();
+    } if$                                         %     }
   } while$                                        %   }
   nameindex namecount < {                         %   if (nameindex < namecount) {
     cap.et.al *                                   %     result = result + cap_et_al();
