@@ -612,7 +612,7 @@ FUNCTION {format.names} {                         % String Entry::format_names(S
   namelist num.names$ 'namecount :=               %   namecount = num_names(namelist);
   ""                                              %   String result = "";
   #0 'nameindex :=                                %   nameindex = 0;
-  {nameindex namecount < nameindex #3 < and} {    %   while ((nameindex < namecount) && (nameindex < 3)) {
+  {nameindex namecount <} {                       %   while (nameindex < namecount) {
     nameindex #1 + 'nameindex :=                  %     nameindex = nameindex + 1;
     namelist nameindex "{vv}" format.name$        %     String tmp = format_name(namelist, nameindex, "{vv}");
    'vonname :=                                    %     vonname = tmp;
@@ -644,9 +644,6 @@ FUNCTION {format.names} {                         % String Entry::format_names(S
       cap.et.al *                                 %       result = result + cap_et_al();
     } if$                                         %     }
   } while$                                        %   }
-  nameindex namecount < {                         %   if (nameindex < namecount) {
-    cap.et.al *                                   %     result = result + cap_et_al();
-  } 'skip$ if$                                    %   }
 }                                                 % }
                                                   %
                                                   %
